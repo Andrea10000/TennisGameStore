@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tennis Game Score</title>
+    <style>
+/*comandi per creare il database CREATE TABLE Partita ( 
+ID_Partita INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+squadra1 varchar(30),
+squadra2 varchar(30)
+);
+
+INSERT INTO Partita 
+(ID_Partita,squadra1,squadra2) 
+VALUES
+(1,'Squadra A','Squadra B');
+
+CREATE TABLE Punti ( 
+ID_Punti INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+ID_Partita INT NOT NULL,
+punti INT(1),
+squadra INT(1)
+);
+
+INSERT INTO Punti 
+(ID_Punti,ID_Partita,punti,squadra) 
+VALUES
+(1,1,1,1),
+(2,1,1,2),
+(3,1,1,1),
+(4,1,1,1),
+(5,1,1,2);
+
+SELECT SUM(Punti.punti) AS punti1 FROM Punti WHERE Punti.squadra=1;
+
+SELECT SUM(Punti.punti) AS punti2 FROM Punti WHERE Punti.squadra=2;*/
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('blue-green-tennis-court-stadium.jpg');
+            background-size: cover;
+            background-position: center;
+            color:aliceblue;
+        }
+
+        #scoreContainer{
+    border: 5px solid black;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.3); /* Aggiunge uno sfondo semi-trasparente */
+}
+
+#scoreVittoria{
+    border: 5px solid black;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.3); /* Aggiunge uno sfondo semi-trasparente */
+    display:none;
+}
+
+        #gameProgress {
+            font-size: 24px;
+            color: #16940a;
+        }
+
+        .scoreSquare {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 1px solid #000;
+            margin-right: 5px;
+            text-align: center;
+            line-height: 50px;
+        }
+
+        /* Stile per caselle di selezione */
+select {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #fff;
+    transition: background-color 0.3s ease;
+}
+
+/* Stile per i bottoni */
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Stile per hover */
+select:hover,
+button:hover {
+    background-color: #45a049;
+}
+
+h1 {
+    font-size: 54px; 
+    text-align: center; 
+    position: absolute; 
+    top: 50px;
+    left: 50%; 
+    transform: translateX(-50%); 
+    z-index: 1;
+    color: rgb(0, 0, 0); 
+    font-family:fantasy;
+}
+    </style>
+</head>
+<body onload="AssegnaNumeroClient()">
+    <div id="scoreVittoria">
+        <p><span id="vittoria"></span></p>
+        <p><span id="vittoriaR2"></span></p>
+    </div>
+    <div id="scoreContainer">
+        <div id="scoreboard">
+            <p><span id="playerB">Team A</span>: <span id="teamB">0</span> (Game: <span id="gameTeamB">0</span>, Set: <span id="setTeamB">0</span>)</p>
+            <p><span id="playerA">Team B</span>: <span id="teamA">0</span> (Game: <span id="gameTeamA">0</span>, Set: <span id="setTeamA">0</span>)</p>
+            <label for="Setpartita" id="labelSetpartita" style="display: none;">Set partita:</label>
+        <select id="Setpartita" style="display: none;">
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+        <button onclick="selectSet()" id="buttonSetPartita" style="display: none;">Scegli</button>
+        <p><span id="SetpartitaSelezionato">Set partita selezionato: </span></p>
+            
+            
+          <!--  <label for="Setpartita">Set partita:</label>
+            <input type="text" id="Setpartita" name="Setpartita"><br><br>-->
+        </div>
+        <div id="gameProgress">
+            <div>
+                <div id="gameProgressA"></div>
+                <div id="gameProgressB"></div>
+            </div>
+            <span id="playerA">Team A</span>:
+            <div>
+                <div class="scoreSquare" id="scoreSquareB15">15</div>
+                <div class="scoreSquare" id="scoreSquareB30">30</div>
+                <div class="scoreSquare" id="scoreSquareB40">40</div>
+            </div>
+            
+            <span id="playerB">Team B</span>:
+            <div>
+                <div class="scoreSquare" id="scoreSquareA15">15</div>
+                <div class="scoreSquare" id="scoreSquareA30">30</div>
+                <div class="scoreSquare" id="scoreSquareA40">40</div>
+            </div>
+        </div>
+        
+        <div id="selezionaGiocatori" style="display: none;">
+        <label for="playerSelectB">Select a Tennis Player for Team A:</label>
+        <select id="playerSelectB">
+            <option value="Roger Federer">Roger Federer</option>
+            <option value="Rafael Nadal">Rafael Nadal</option>
+            <option value="Novak Djokovic">Novak Djokovic</option>
+            <option value="Serena Williams">Serena Williams</option>
+            <option value="Naomi Osaka">Naomi Osaka</option>
+            <option value="Ashleigh Barty">Ashleigh Barty</option>
+            <option value="Dominic Thiem">Dominic Thiem</option>
+            <option value="Stefanos Tsitsipas">Stefanos Tsitsipas</option>
+            <option value="Simona Halep">Simona Halep</option>
+            <option value="Alexander Zverev">Alexander Zverev</option>
+        </select>
+        <button onclick="selectPlayer('B')">Scegli</button>
+
+        <br> <!-- Nuova riga -->
+
+        <label for="playerSelectA">Select a Tennis Player for Team B:</label>
+        <select id="playerSelectA">
+            <option value="Roger Federer">Roger Federer</option>
+            <option value="Rafael Nadal">Rafael Nadal</option>
+            <option value="Novak Djokovic">Novak Djokovic</option>
+            <option value="Serena Williams">Serena Williams</option>
+            <option value="Naomi Osaka">Naomi Osaka</option>
+            <option value="Ashleigh Barty">Ashleigh Barty</option>
+            <option value="Dominic Thiem">Dominic Thiem</option>
+            <option value="Stefanos Tsitsipas">Stefanos Tsitsipas</option>
+            <option value="Simona Halep">Simona Halep</option>
+            <option value="Alexander Zverev">Alexander Zverev</option>
+        </select>
+        <button onclick="selectPlayer('A')">Scegli</button>
+        <p><span id="sonoIlPrimo" style="display: none;">qui</span></p>
+        <br> <!-- Nuova riga -->
+
+        <button onclick="incrementScore('B')">Incrementa Punteggio Team A</button>
+        <button onclick="incrementScore('A')" style="float: inline-end;">Incrementa Punteggio Team B</button>
+        </div>
+       
+    </div>
+    <script>
+        const ws = new WebSocket('ws://localhost:3000');
+        let clientIndex = -1;
+
+        ws.onopen = function() {
+            console.log('WebSocket Client Connected');
+        };
+
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            if(data.numeroSessione.numSessione>0 && document.getElementById('sonoIlPrimo').textContent!='s')
+            {}
+            else
+            {
+                document.getElementById('labelSetpartita').style.display = "inline";
+                document.getElementById('Setpartita').style.display = "inline";
+                document.getElementById('buttonSetPartita').style.display = "inline";
+                document.getElementById('selezionaGiocatori').style.display = "block";
+                document.getElementById('sonoIlPrimo').textContent='s';
+            }
+            document.getElementById('teamA').textContent = data.punteggio.squadra1;
+            document.getElementById('teamB').textContent = data.punteggio.squadra2;
+            document.getElementById('gameTeamA').textContent = data.punteggio.gameSquadra1;
+            document.getElementById('gameTeamB').textContent = data.punteggio.gameSquadra2;
+            document.getElementById('setTeamA').textContent = data.punteggio.setSquadra1;
+            document.getElementById('setTeamB').textContent = data.punteggio.setSquadra2;
+            if(data.set.setPartita!=" ")
+            {
+                document.getElementById('SetpartitaSelezionato').textContent = "Set partita selezionato: "+data.set.setPartita;
+                document.getElementById('Setpartita').textContent = data.set.setPartita;
+            }
+            if(data.nomiGiocatori.nomeGiocatoreA!=" ")
+            {
+                document.getElementById('playerB').textContent = data.nomiGiocatori.nomeGiocatoreA;
+                document.getElementById('playerSelectB').textContent = data.nomiGiocatori.nomeGiocatoreA;
+            }
+            if(data.nomiGiocatori.nomeGiocatoreB!=" ")
+            {
+                document.getElementById('playerA').textContent = data.nomiGiocatori.nomeGiocatoreB;
+                document.getElementById('playerSelectA').textContent = data.nomiGiocatori.nomeGiocatoreB;
+            }
+            
+            
+
+            // Retrieve and set client index if it's included in the message
+            if (data.clientIndex !== undefined) {
+                clientIndex = data.clientIndex;
+                // Only the second client is blocked
+                if (clientIndex === 1) {
+                    document.querySelectorAll('button').forEach(button => button.disabled = true);
+                    document.querySelectorAll('select').forEach(select => select.disabled = true);
+                    SecondoClient(true);
+                    alert("0");
+                }
+            }
+
+            VerificaSet(data.punteggio.setSquadra1);
+        };
+
+
+       /* function SecondoClient(ClientConSolaLettura) {
+            if(ClientConSolaLettura==true)
+            {
+                document.getElementById('labelSetpartita').style.display = "none";
+                document.getElementById('Setpartita').style.display = "none";
+                document.getElementById('buttonSetPartita').style.display = "none";
+            }
+        }*/
+
+        function selectSet() {
+            const setSelect = document.getElementById("Setpartita");
+            const selectedSet = setSelect.options[setSelect.selectedIndex].value; 
+            document.getElementById('Setpartita').textContent = "  " + selectedSet;
+            document.getElementById('SetpartitaSelezionato').textContent = "set partita selezionato: " + selectedSet; 
+            DatiDaMandareAlWS(" ", selectedSet, " ", " ");
+            setSelect.disabled = true;
+            VerificaSet(selectedSet);
+        }
+
+        function selectPlayer(squadra) {
+            const playerSelect = document.getElementById("playerSelect" + squadra);
+            const selectedPlayer = playerSelect.options[playerSelect.selectedIndex].value;
+            document.getElementById('player' + squadra).textContent = selectedPlayer;
+            if(('player'+squadra)=="playerA")
+            {
+                DatiDaMandareAlWS(" ", " ", " ", selectedPlayer);
+            }
+            else if(('player'+squadra)=="playerB")
+            {
+                DatiDaMandareAlWS(" ", " ", selectedPlayer, " ");
+            }
+            playerSelect.disabled = true; 
+            return selectedPlayer;
+        }
+
+        var scoreTeamAContatore = 0;
+        var scoreTeamA = 0;
+        var scoreTeamBContatore = 0;
+        var scoreTeamB = 0;
+
+        function DatiDaMandareAlWS(squadra, set, nomeGiocatoreSquadraA, nomeGiocatoreSquadraB){
+            var chiediclient='n';
+            const data = { squadra ,  set, nomeGiocatoreSquadraA, nomeGiocatoreSquadraB, chiediclient } ;
+            ws.send(JSON.stringify(data));
+        }
+
+
+        function AssegnaNumeroClient()
+        {
+            var chiediclient='s';
+            const data2 = {chiediclient };
+            ws.send(JSON.stringify(data2));
+        }
+
+        function incrementScore(squadra) {
+            
+            DatiDaMandareAlWS(squadra, " ", " " , " ");
+
+            if (squadra == "A") {
+                if (scoreTeamAContatore === 1) {
+                    scoreTeamA = 15;
+                    cambiaSfondo(squadra, scoreTeamA);
+                } else if (scoreTeamAContatore === 2) {
+                    scoreTeamA = 30;
+                    cambiaSfondo(squadra, scoreTeamA);
+                } else if (scoreTeamAContatore === 3) {
+                    scoreTeamA = 40;
+                    cambiaSfondo(squadra, scoreTeamA);
+                } else if (scoreTeamAContatore === 4) {
+                    scoreTeamA = 0;
+                    scoreTeamAContatore = 0;
+                }
+                scoreTeamAContatore++; 
+            } else if (squadra == "B") {
+                if (scoreTeamBContatore === 1) {
+                    scoreTeamB = 15;
+                    cambiaSfondo(squadra, scoreTeamB);
+                } else if (scoreTeamBContatore === 2) {
+                    scoreTeamB = 30;
+                    cambiaSfondo(squadra, scoreTeamB);
+                } else if (scoreTeamBContatore === 3) {
+                    scoreTeamB = 40;
+                    cambiaSfondo(squadra, scoreTeamB);
+                } else if (scoreTeamBContatore === 4) {
+                    scoreTeamB = 0;
+                    scoreTeamBContatore = 0;
+                }
+                scoreTeamBContatore++;
+            }
+
+            if (scoreTeamA == 40) {
+                document.getElementById('teamA').style.color = "white";
+            } else {
+                document.getElementById('teamA').style.color = "black";
+            }
+            if (scoreTeamB == 40) {
+                document.getElementById('teamB').style.color = "white";
+            } else {
+                document.getElementById('teamB').style.color = "black";
+            }
+        }
+
+        function cambiaSfondo(squadra, punti) {
+            const divId = `scoreSquare${squadra}${punti}`;
+            const div = document.getElementById(divId);
+
+            if (div) {
+                ripristinaColori();
+                div.style.backgroundColor = squadra === "A" ? "blue" : "red";
+            }
+        }
+
+        function ripristinaColori() {
+            const divs = document.querySelectorAll("div[id^='scoreSquare']");
+            divs.forEach(div => {
+                div.style.backgroundColor = "";
+            });
+        }
+
+        function VerificaSet(setSelezionato){   
+   /* if(setSelezionato== 0)
+    {
+        document.getElementById('SetpartitaSelezionato').textContent = "";
+    }
+    else
+    {
+        document.getElementById('SetpartitaSelezionato').textContent ="set partita selezionato: >" +setSelezionato + "<"; 
+    }   */
+    if(parseInt(document.getElementById('Setpartita').textContent) == 2)
+    { 
+        if(parseInt(document.getElementById('setTeamA').textContent)== 2)
+        {
+            document.getElementById('scoreContainer').style.display="none";
+            document.getElementById('scoreVittoria').style.display="block";
+            document.getElementById('vittoria').textContent="Partita finita, ha vinto la squadra B";
+            document.getElementById('vittoriaR2').textContent="col giocatore "+selectPlayer('A');
+        }
+        else if(parseInt(document.getElementById('setTeamB').textContent)== 2)
+        {
+            document.getElementById('scoreContainer').style.display="none";
+            document.getElementById('scoreVittoria').style.display="block";
+            document.getElementById('vittoria').textContent="Partita finita, ha vinto la squadra A";
+            document.getElementById('vittoriaR2').textContent="col giocatore "+selectPlayer('B');
+        }
+    }
+    else
+    {
+        if(parseInt(document.getElementById('setTeamA').textContent)== 3)
+        {
+            document.getElementById('scoreContainer').style.display="none";
+            document.getElementById('scoreVittoria').style.display="block";
+            document.getElementById('vittoria').textContent="Partita finita, ha vinto la squadra B";
+            document.getElementById('vittoriaR2').textContent="col giocatore "+selectPlayer('A');
+        }
+        else if(parseInt(document.getElementById('setTeamB').textContent)== 3)
+        {
+            document.getElementById('scoreContainer').style.display="none";
+            document.getElementById('scoreVittoria').style.display="block";
+            document.getElementById('vittoria').textContent="Partita finita, ha vinto la squadra A";
+            document.getElementById('vittoriaR2').textContent="col giocatore "+selectPlayer('B');
+        }
+    }
+}
+    </script>
+    
+</body>
+</html>
