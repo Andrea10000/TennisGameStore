@@ -16,10 +16,10 @@ let setScoreTeamB = 0;
 let clients = []; // Array to keep track of clients
 
 const con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "federico1"
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
 });
 
 con.connect(function(err) {
