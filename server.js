@@ -3,7 +3,7 @@ const WebSocket = require('ws');
 const mysql = require('mysql');
 
 const server = express()
-  .use(express.static('public'))
+  .use(express.static('.public/index.html'))
   .listen(3000, () => console.log('Listening on 3000'));
 
 const ws_server = new WebSocket.Server({ server });
