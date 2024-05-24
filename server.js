@@ -23,14 +23,14 @@ const con = mysql.createConnection({
 });
 
 con.connect(function(err) {
-  //if (err) throw err;
+  if (err) throw err;
   console.log("Connected to MySQL database!");
 
   con.query("SELECT COUNT(*) AS count FROM Partita", function (err, result) {
-    //if (err) throw err;
+    if (err) throw err;
     if (result[0].count === 0) {
       con.query("INSERT INTO Partita (squadra1, squadra2) VALUES ('Squadra A', 'Squadra B')", function (err, result) {
-        //if (err) throw err;
+        if (err) throw err;
         console.log("Initial data inserted into Partita table");
       });
     }
@@ -125,7 +125,7 @@ function updateScore(squadra) {
     }
   }
   con.query("INSERT INTO Punti (ID_Partita, punti, squadra) VALUES (?, ?, ?)", [1, 1, squadra === 'A' ? 1 : 2], function(err, result) {
-    //if (err) throw err;
+    if (err) throw err;
     console.log("Punti aggiunti alla tabella Punti");
   });
   ws_server.clients.forEach(client => {
