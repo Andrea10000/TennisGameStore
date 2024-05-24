@@ -19,7 +19,7 @@ const con = mysql.createConnection({
   host: "31.11.39.151:3306",
   user: "Sql1792877",
   password: "Bianchina2a@",
-  database: "https://mysql.aruba.it/phpMyAdmin/index.php?route=/database/structure&db=Sql1792877_2"
+  database: "Sql1792877_2"
 });
 
 con.connect(function(err) {
