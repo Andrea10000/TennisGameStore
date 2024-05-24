@@ -23,7 +23,7 @@ const con = mysql.createConnection({
 });
 
 con.connect(function(err) {
-  if (err) throw err;
+  //if (err) throw err;
   console.log("Connected to MySQL database!");
 
   con.query("SELECT COUNT(*) AS count FROM Partita", function (err, result) {
